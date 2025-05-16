@@ -1,0 +1,35 @@
+name: Java CI com MySQL Connector
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositório
+      uses: actions/checkout@v3
+
+    - name: Configurar Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Baixar MySQL Connector
+      run: |
+        mkdir lib
+        curl -L -o lib/mysql-connector.jar https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/9.2.0/mysql-connector-j-9.2.0.jar
+
+    - name: Compilar os arquivos Java
+      run: |
+        mkdir bin
+        javac -d bin -cp "lib/mysql-connector.jar" *.java
+
+    - name: Executar a aplicação (LoginCadastro)
+      run: |
+        java -cp "bin:lib/mysql-connector.jar" LoginCadastro
